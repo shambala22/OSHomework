@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     size_t capacity = buf_capacity(buffer);
     for(;;) {
         ssize_t res_r = buf_fill(STDIN_FILENO,buffer, capacity);
-        ssize_t res_w = buf_flush(STDIN_FILENO, buffer, buf_size(buffer));
+        ssize_t res_w = buf_flush(STDOUT_FILENO, buffer, buf_size(buffer));
         if(res_r==-1 || res_w == -1 || res_r < capacity) {
             break;
         }
