@@ -20,7 +20,7 @@ struct buf {
 };
 
 struct buf *buf_new(size_t cap) {
-    struct buf* new_buf = (struct buf*) malloc(sizeof(struct buf) + capacity);
+    struct buf* new_buf = (struct buf*) malloc(sizeof(struct buf) + cap);
     if (new_buf==NULL) {
         return new_buf;
     }
@@ -51,7 +51,6 @@ ssize_t buf_fill(int fd, struct buf *b, size_t req) {
     int count = req - b->size;
     while(1) {
         res = read(fd, b->data + b->size, b->capacity - b->size);
-        //RETHROW_IO(res);
         if (res >= count) {
             return b->size += res;
         }
@@ -73,12 +72,11 @@ ssize_t buf_flush(int fd, struct buf *b, size_t req) {
         if (res==-1) break;
         wr += res;
         if (res>=count) break;
-        if (write==b->size) break;
+        if (wr==b->size) break;
         count -= res;
     }
     if ((b->size-=wr)>0) {
         memmove(b, b+wr, b->size);
     }
-    RETHROW_IO(res);
     return wr;
 }
